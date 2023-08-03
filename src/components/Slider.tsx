@@ -57,6 +57,7 @@ const Slider = () => {
                 alt="" 
                 fill 
                 className='object-cover'
+                sizes="(min-width: 66em) 33vw, (min-width: 44em) 50vw, 100vw"
             />
         </div>
     </div>
