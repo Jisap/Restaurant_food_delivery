@@ -35,7 +35,7 @@ const Navbar = () => {
           <span>123 456 78</span>
         </div>
         {!user ? (
-          <Link href="/">Login</Link>
+          <Link href="/login">Login</Link>
         ) : (
           <Link href="/menu">Orders</Link>
         )}
