@@ -1,8 +1,9 @@
-import React from 'react'
+
 import Menu from './Menu'
 import Link from 'next/link'
 import CartIcon from './CartIcon';
 import Image from 'next/image';
+import UserLinks from './UserLinks';
 
 const Navbar = () => {
 
@@ -34,11 +35,8 @@ const Navbar = () => {
           <Image src="/phone.png" alt="" width={20} height={20}/>
           <span>123 456 78</span>
         </div>
-        {!user ? (
-          <Link href="/login">Login</Link>
-        ) : (
-          <Link href="/menu">Orders</Link>
-        )}
+        
+        <UserLinks />
         <CartIcon />
       </div>
 
