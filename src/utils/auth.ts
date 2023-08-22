@@ -18,7 +18,7 @@ declare module "next-auth/jwt" {
 }
 
 export const authOptions:NextAuthOptions = {
-    adapter: PrismaAdapter(prisma),
+    adapter: PrismaAdapter(prisma), // manejará la autenticación y agregará automáticamente nuevos usuarios, sesiones y cuentas a la base de datos.
     session:{
         strategy: "jwt"
     },
@@ -28,7 +28,9 @@ export const authOptions:NextAuthOptions = {
             clientSecret: process.env.GOOGLE_SECRET!,
         }),
     ],
-    callbacks:{ // una vez autenticado...
+    callbacks:{ // Una vez autenticado se generá un token que contiene solo userName, email e image,
+                // se procede a introducir en token y session la prop isAdmin procedente de bd.
+                
         async session({ token, session }){
             if(token){                                      // Si existe el token // 3º
                 session.user.isAdmin = token.isAdmin        // añadimos a session.user.isAdmin la prop correspondiente del token

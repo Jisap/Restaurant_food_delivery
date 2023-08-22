@@ -7,7 +7,7 @@ import { NextResponse } from "next/server"
 // Fetch all orders
 export const GET = async (req: NextResponse) => {
 
-    const  session  = await getAuthSession();
+    const  session  = await getAuthSession(); // Se usa desde el lado del "server"
 
     if(session){
     

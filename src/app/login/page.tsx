@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
 
-  const { data, status } = useSession();
+  const { data, status } = useSession(); // Se usa desde el lado del "client" y se comunica con google devolviendo la data y el status
   const router = useRouter()
  
   if (status === "loading") {
@@ -33,7 +33,10 @@ const LoginPage = () => {
         <div className="p-10 flex flex-col gap-8 md:w-1/2">
           <h1 className="font-bold text-xl xl:text-3xl">Welcome</h1>
           <p>Log into your account or create a new one using social buttons</p>
-          <button className="flex gap-4 p-4 ring-1 ring-orange-100 rounded-md" onClick={()=>signIn("google")}>
+          <button 
+            className="flex gap-4 p-4 ring-1 ring-orange-100 rounded-md" 
+            onClick={() => signIn("google")} // Comunica con google y nos autentíca -> status = authenticated -> callbacks
+          >
             <Image
               src="/google.png"
               alt=""
