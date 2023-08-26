@@ -1,13 +1,10 @@
 "use client";
 
 import { ProductType } from "@/types/type";
+import { useCartStore } from "@/utils/store";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
-type Props = {
-    price: number;
-    id: string;
-    options?: { title: string; additionalPrice: number }[];
-};
 
 const Price = ({ product }: { product:ProductType }) => {
 
@@ -15,14 +12,43 @@ const Price = ({ product }: { product:ProductType }) => {
     const [quantity, setQuantity] = useState(1);
     const [selected, setSelected] = useState(0);
 
+    const { addToCart } = useCartStore();
+
+    useEffect(() => { // Se hace para cargar el estado persistente de la tienda cuando la aplicación se carga o inicia.
+        useCartStore.persist.rehydrate()
+    },[])
+
     useEffect(() => {
         if (product.options?.length) {
             setTotal(
                 quantity * product.price + product.options[selected].additionalPrice // Quantity * price + price de la opción seleccionada
             );
+            console.log(total)
         }
     }, [quantity, selected, product]);
 
+    const handleCart = () => {
+
+        console.log({
+            id: product.id,
+            title: product.title,
+            img: product.img,
+            price: total,
+            ...(product.options?.length && { optionTitle: product.options[selected].title }),
+            quantity: quantity
+        })
+
+        addToCart({
+            id: product.id,
+            title: product.title,
+            img: product.img,
+            price: total,
+            ...(product.options?.length && { optionTitle: product.options[selected].title }),
+            quantity: quantity
+        });
+
+        toast.success("The product added to the cart")
+    }
 
     return (
         <div className="flex flex-col gap-4">
@@ -55,7 +81,12 @@ const Price = ({ product }: { product:ProductType }) => {
                     </div>
                 </div>
                 {/* Cart */}
-                <button className="uppercase w-56 bg-red-500 text-white p-3 ring-1 ring-red-500">Add to Cart</button>
+                <button 
+                    className="uppercase w-56 bg-red-500 text-white p-3 ring-1 ring-red-500"
+                    onClick={handleCart}
+                >
+                    Add to Cart
+                </button>
             </div>
         </div>
     )
