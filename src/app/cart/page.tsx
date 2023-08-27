@@ -1,12 +1,16 @@
 'use client'
 
 import { useCartStore } from "@/utils/store";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const CartPage = () => {
 
   const { products, totalItems, totalPrice, removeFromCart } = useCartStore();
+  const { data:session } = useSession();
+  const router = useRouter()
 
   console.log('products', products)
   console.log('totalItems', totalItems)
@@ -15,6 +19,29 @@ const CartPage = () => {
   useEffect(() => { // Se hace para cargar el estado persistente de la tienda cuando la aplicación se carga o inicia.
     useCartStore.persist.rehydrate()
   }, [])
+
+  const handleCheckout = async() => {
+    if(!session){
+      router.push('/');
+    }
+
+    try {
+      const res = await fetch("http://localhost:3000/api/orders", {
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
+        body:JSON.stringify({
+          price: totalPrice,
+          products,
+          status: "Not Paid",
+          userEmail: session?.user.email
+        }),
+      });
+      const data = await res.json();
+      router.push(`/pay/${data.id})`);
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <div className="h-[calc(100vh-6rem)] md:h-[calc(100vh-9rem)] flex flex-col text-red-500 lg:flex-row">
@@ -69,7 +96,12 @@ const CartPage = () => {
           <span>TOTAL(INCL. VAT)</span>
           <span className="font-bold">${totalPrice}</span>
         </div>
-        <button className="bg-red-500 text-white p-3 rounded-md w-1/2 self-end">Checkout</button>
+        <button 
+          className="bg-red-500 text-white p-3 rounded-md w-1/2 self-end"
+          onClick={handleCheckout}    
+        >
+          Checkout
+        </button>
       </div>
     </div>
   )
