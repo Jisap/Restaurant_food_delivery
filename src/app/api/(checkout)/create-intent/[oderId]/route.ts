@@ -1,15 +1,19 @@
 import { prisma } from "@/utils/connect";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 
-export const POST = async ({ params }:{ params:{ id:string }}) => {
-    const { id } = params;
+export const POST = async ( req: NextRequest, { params }:{ params:{ orderId:string}}) => {
+
+    //const  { orderId } = params
+    const { pathname } = req.nextUrl;
+    const orderId = pathname.split('/').pop();
+    console.log('orderId', orderId)
 
     const order = await prisma.order.findUnique({   // Buscamos la order en bd
         where: {
-            id: id,
+            id: orderId,
         },
     });
 
@@ -25,12 +29,12 @@ export const POST = async ({ params }:{ params:{ id:string }}) => {
 
         await prisma.order.update({ // Actualizamos la prop intent_id con la id de la intención de pago
             where:{
-                id: id
+                id: orderId
             },
             data: { intent_id: paymentIntent.id }
         })
 
-        return new NextResponse(JSON.stringify({ clientSecret: paymentIntent.client_Secret }), { // Devolvemos un clientSecret de la intención de pago
+        return new NextResponse(JSON.stringify({ clientSecret: paymentIntent.client_secret }), { // Devolvemos un clientSecret de la intención de pago
             status: 200,
         });
     
