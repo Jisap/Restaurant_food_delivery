@@ -56,7 +56,7 @@ const CheckoutForm = () => { // se encarga de manejar el formulario de pago y re
     const { error } = await stripe.confirmPayment({ // Confirmación del pago, enviandole 
       elements,                                     // elements que contiene el clientSecret y los datos del formulario
       confirmParams: {
-        return_url: "http://localhost:3000/success", // Si el pago fue exitoso redirigimos a la página de success
+        return_url: "http://localhost:3000/success", // Si el pago fue exitoso redirigimos a la página de success/payment_intentId
       },
     });
 

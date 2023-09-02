@@ -6,7 +6,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 export const POST = async ( req: NextRequest, { params }:{ params:{ orderId:string}}) => {
 
-    //const  { orderId } = params
+    //const  { orderId } = params // No me funciona así que utilizo un camino alternativo
     const { pathname } = req.nextUrl;
     const orderId = pathname.split('/').pop();
     console.log('orderId', orderId)
