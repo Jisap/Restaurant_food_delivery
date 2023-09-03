@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import  Image  from 'next/image';
 
 type Inputs = {
     title: string;
@@ -35,6 +36,7 @@ const AddPage = () => {
   });
 
   const[options, setOptions] = useState<Option[]>([]);
+  const [file, setFile] = useState<File>();
 
   const router = useRouter();
 
@@ -62,9 +64,12 @@ const AddPage = () => {
         e.preventDefault();
         
         try {
+
+            const url = await upload();
             const res = await fetch("http://localhost:3000/api/products", {
                 method: "POST",
                 body: JSON.stringify({
+                    img:url,
                     ...inputs,
                     options,
                 }),
@@ -79,12 +84,54 @@ const AddPage = () => {
         }
     }
 
+    const handleChangeImg = (e: React.ChangeEvent<HTMLInputElement>) => { // Establece el estado para la imagen a subir 
+        const target = e.target as HTMLInputElement;
+        const item = (target.files as FileList)[0];
+        setFile(item);
+    };
+
+    const upload = async () => {  // Sube la imagen a cloudinary
+        const data = new FormData();
+        data.append("file", file!);
+        data.append("upload_preset", "restaurant");
+
+        const res = await fetch("https://api.cloudinary.com/v1_1/downe22q2/image", {
+            method: "POST",
+            headers: { "Content-Type": "multipart/form-data" },
+            body: data,
+        });
+
+        const resData = await res.json();
+        return resData.url; // url de la imagen en cloudinary
+    };
+
+
 
   return (
       <div className="p-4 lg:px-20 xl:px-40 h-[calc(100vh-6rem)] md:h-[calc(100vh-9rem)] flex items-center justify-center text-red-500">
           <form className="flex flex-wrap gap-6" onSubmit={ handleSubmit }>
               <h1 className="text-4xl mb-2 text-gray-300 font-bold">Add New Product</h1>
               
+              <div className="w-full flex flex-col gap-2 ">
+                  <label
+                      className="text-sm cursor-pointer flex gap-4 items-center"
+                      htmlFor="file"
+                  >
+                      <Image 
+                        src="/upload.png" 
+                        alt="" width={30} 
+                        height={20} 
+                    />
+                      <span>Upload Image</span>
+                  </label>
+                  <input
+                      type="file"
+                      onChange={handleChangeImg}
+                      id="file"
+                      className="hidden"
+                  />
+              </div>  
+
               <div className="w-full flex flex-col gap-2 ">
                 <label className="text-sm">Title</label>
                 <input 
