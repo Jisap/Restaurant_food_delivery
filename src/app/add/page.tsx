@@ -122,7 +122,7 @@ const AddPage = () => {
                 <label className="text-sm">Category</label>
                 <input 
                     type="text" 
-                    name="category"
+                    name="catSlug"
                     placeholder="pizzas"
                     className="ring-1 ring-red-200 p-4 rounded-sm placeholder:text-red-200 outline-none"
                     onChange={handleChange}
