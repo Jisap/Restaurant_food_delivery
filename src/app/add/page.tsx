@@ -66,7 +66,7 @@ const AddPage = () => {
         try {
 
             const url = await upload();
-            const res = await fetch("http://localhost:3000/api/products", {
+            const res = await fetch("http://localhost:3000/api/products", { // Crea el nuevo producto con la imagen, inputs y options
                 method: "POST",
                 body: JSON.stringify({
                     img:url,
@@ -95,9 +95,9 @@ const AddPage = () => {
         data.append("file", file!);
         data.append("upload_preset", "restaurant");
 
-        const res = await fetch("https://api.cloudinary.com/v1_1/downe22q2/image", {
+        const res = await fetch("https://api.cloudinary.com/v1_1/<CLOUD_NAME>/image/upload", {
             method: "POST",
-            headers: { "Content-Type": "multipart/form-data" },
+            //headers: { "Content-Type": "multipart/form-data" },
             body: data,
         });
 
